@@ -7,6 +7,11 @@ defaults:
 on:
   workflow_call:
     inputs:
+      bench:
+        description: Run `cargo bench`
+        type: boolean
+        required: false
+        default: true
       cache-key-prefix:
         description: |
           Prefix to add to cache key(s).
@@ -117,6 +122,7 @@ jobs:
     - run: cargo test --frozen ${{ inputs.cargo-flags }} -- ${{ inputs.cargo-test-flags }}
     - run: cargo doc --examples --frozen --no-deps ${{ inputs.cargo-flags }}
     - run: cargo bench --frozen ${{ inputs.cargo-flags }}
+      if: inputs.bench
     - name: Run post-hook
       if: inputs.post-hook != ''
       run: ${{ inputs.post-hook }}
