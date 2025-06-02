@@ -1,0 +1,20 @@
+name: Doc
+
+on:
+  push:
+    branches:
+    - main
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  Doc:
+    uses: ./.github/workflows/mdbook-pages.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    with:
+      deploy: false

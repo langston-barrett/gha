@@ -1,0 +1,43 @@
+name: Deploy mdBook to GitHub pages
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -euxo pipefail {0}
+
+on:
+  workflow_call:
+    inputs:
+      deploy:
+        type: boolean
+        required: false
+        default: true
+
+jobs:
+  Doc:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: peaceiris/actions-mdbook@v2
+    - run: mdbook build
+      working-directory: doc
+    - name: Upload docs artifact to GitHub Pages
+      uses: actions/upload-pages-artifact@v3
+      if: github.ref == 'refs/heads/main' &&
+          github.event.pull_request.head.repo.fork == false &&
+          github.repository_owner == 'langston-barrett'
+      with:
+        path: doc/book/
+    - name: Deploy docs to GitHub Pages
+      uses: actions/deploy-pages@v4
+      if: inputs.deploy &&
+          github.ref == 'refs/heads/main' &&
+          github.event.pull_request.head.repo.fork == false &&
+          github.repository_owner == 'langston-barrett'
+      id: deployment

@@ -1,0 +1,15 @@
+# Empty Rust project to test rust-ci.yml
+[package]
+name = "test"
+version = "0.0.0"
+
+authors.workspace = true
+edition.workspace = true
+homepage.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+anyhow = "1"

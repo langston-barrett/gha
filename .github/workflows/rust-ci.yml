@@ -1,0 +1,122 @@
+name: Rust CI
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -euxo pipefail {0}
+
+on:
+  workflow_call:
+    inputs:
+      cache-key-prefix:
+        description: |
+          Prefix to add to cache key(s).
+
+          May be used to distinguish caches for multiple builds in the same repo.
+          Can also be used to force a cache miss.
+          Passed to Swatinem/rust-cache/prefix-key.
+        type: string
+        required: false
+        default: ""
+      cargo-flags:
+        description: Flags to pass to `cargo`
+        type: string
+        required: false
+        default: --locked
+      cargo-test-flags:
+        description: Flags to pass to `cargo test`
+        type: string
+        required: false
+        default: ""
+      fetch-depth:
+        description: Number of commits to fetch. Passed to `actions/checkout`.
+        type: number
+        required: false
+        default: 1
+      os:
+        description: |
+          Runner OS, e.g., "ubuntu-latest".
+
+          Set this to the value of `runs-on`, *not* `runner.os`.
+        type: string
+        required: true
+      post-hook:
+        description: Shell commands to execute after the rest of the workflow.
+        type: string
+        required: false
+        default: ""
+      pre-hook:
+        description: |
+          Shell commands to execute before the rest of the workflow.
+
+          Runs immediately after `actions/checkout`.
+        type: string
+        required: false
+        default: ""
+      pre-test-hook:
+        description: |
+          Shell commands to execute before running `cargo test`.
+
+          Useful for e.g., installing runtime dependencies for test-suites.
+        type: string
+        required: false
+        default: ""
+      rust:
+        description: Rust toolchain, e.g., "stable" or "1.87"
+        type: string
+        required: false
+        default: ""
+      submodules:
+        description: Whether to check out submodules. Passed to `actions/checkout`.
+        type: string
+        required: false
+        default: "false"
+
+# General commentary
+# ------------------
+#
+# Steps that are less likely to fail should come later, because failing earlier
+# saves time and resources.
+#
+# See https://github.com/rust-lang/cargo/issues/5656 for ideas
+#
+# TODO:
+#
+# - Integrate https://github.com/RalfJung/cargo-careful
+# - Integrate https://github.com/taiki-e/cargo-hack?tab=readme-ov-file#from-prebuilt-binaries
+jobs:
+  CI:
+    runs-on: ${{ inputs.os }}
+    env:
+      # Optimization, see: https://matklad.github.io/2021/09/04/fast-rust-builds.html#CI-Workflow
+      CARGO_INCREMENTAL: 0
+      RUSTFLAGS: --deny warnings
+      RUSTDOCFLAGS: --deny warnings
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: ${{ inputs.fetch-depth }}
+        # https://github.com/actions/checkout/issues/485
+        persist-credentials: false
+        submodules: ${{ inputs.submodules }}
+    - name: Run pre-hook
+      if: inputs.pre-hook != ''
+      run: ${{ inputs.pre-hook }}
+    - run: rustup update ${{ inputs.rust }} && rustup default ${{ inputs.rust }}
+      if: inputs.rust != ''
+    - run: cargo fmt --all -- --check
+    - run: cargo fetch ${{ inputs.cargo-flags }}
+    - run: rustup component add clippy
+    - uses: Swatinem/rust-cache@v2
+      with:
+        prefix-key: ${{ inputs.cache-key-prefix }}
+    - run: cargo clippy --all-targets --frozen ${{ inputs.cargo-flags }} -- --deny warnings
+    - run: cargo build --all-targets --frozen ${{ inputs.cargo-flags }}
+    - name: Run pre-test-hook
+      if: inputs.pre-test-hook != ''
+      run: ${{ inputs.pre-test-hook }}
+    - run: cargo test --frozen ${{ inputs.cargo-flags }} -- ${{ inputs.cargo-test-flags }}
+    - run: cargo doc --examples --frozen --no-deps ${{ inputs.cargo-flags }}
+    - run: cargo bench --frozen ${{ inputs.cargo-flags }}
+    - name: Run post-hook
+      if: inputs.post-hook != ''
+      run: ${{ inputs.post-hook }}

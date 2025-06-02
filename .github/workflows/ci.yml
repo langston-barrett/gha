@@ -1,0 +1,11 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  CI:
+    uses: ./.github/workflows/rust-ci.yml
+    with:
+      os: ubuntu-latest

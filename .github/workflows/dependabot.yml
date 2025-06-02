@@ -1,0 +1,10 @@
+name: Dependabot
+
+on:
+  pull_request:
+
+jobs:
+  Dependabot:
+    uses: ./.github/workflows/merge-dependabot-prs.yml
+    with:
+      only-patch: false
