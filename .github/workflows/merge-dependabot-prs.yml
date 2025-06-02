@@ -19,7 +19,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  Dependabot:
+  dependabot:
     runs-on: ubuntu-latest
     if: github.event.pull_request.user.login == 'dependabot[bot]' &&
         github.event.pull_request.head.repo.fork == false &&

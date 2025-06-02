@@ -1,4 +1,4 @@
-name: Doc
+name: Test doc action
 
 on:
   push:
@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  Doc:
+  doc:
     uses: ./.github/workflows/mdbook-pages.yml
     permissions:
       contents: read
