@@ -1,7 +1,11 @@
-name: Dependabot
+name: dependabot
 
 on:
   pull_request:
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   dependabot:
