@@ -1,0 +1,19 @@
+name: Test release action
+
+on:
+  push:
+    branches:
+    - release*
+    tags:
+
+jobs:
+  release:
+    uses: ./.github/workflows/rust-release.yml
+    permissions:
+      contents: write
+    secrets:
+      crates-io-token: ${{ secrets.CRATES_IO_TOKEN }}
+    with:
+      bin: test
+      package: test
+      publish: false

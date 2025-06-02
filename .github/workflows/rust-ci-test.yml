@@ -1,11 +1,13 @@
-name: CI
+name: Test CI action
 
 on:
   push:
   pull_request:
 
+permissions: {}
+
 jobs:
-  CI:
+  ci:
     uses: ./.github/workflows/rust-ci.yml
     with:
       os: ubuntu-latest

@@ -4,7 +4,7 @@ on:
   pull_request:
 
 jobs:
-  Dependabot:
+  dependabot:
     uses: ./.github/workflows/merge-dependabot-prs.yml
     with:
       only-patch: false

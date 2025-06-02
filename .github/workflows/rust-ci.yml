@@ -4,6 +4,8 @@ defaults:
   run:
     shell: bash --noprofile --norc -euxo pipefail {0}
 
+permissions: {}
+
 on:
   workflow_call:
     inputs:
@@ -89,7 +91,7 @@ on:
 # - Integrate https://github.com/RalfJung/cargo-careful
 # - Integrate https://github.com/taiki-e/cargo-hack?tab=readme-ov-file#from-prebuilt-binaries
 jobs:
-  CI:
+  ci:
     runs-on: ${{ inputs.os }}
     env:
       # Optimization, see: https://matklad.github.io/2021/09/04/fast-rust-builds.html#CI-Workflow
