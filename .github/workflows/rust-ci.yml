@@ -100,7 +100,7 @@ jobs:
       RUSTFLAGS: --deny warnings
       RUSTDOCFLAGS: --deny warnings
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: ${{ inputs.fetch-depth }}
         # https://github.com/actions/checkout/issues/485
