@@ -1,0 +1,24 @@
+name: Test Zizmor action
+on:
+  push:
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  zizmor:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - uses: ./.github/actions/install-zizmor
+    # TODO: lint other actions+workflows
+    - run: zizmor .github/dependabot.yml
