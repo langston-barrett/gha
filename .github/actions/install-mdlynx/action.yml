@@ -1,0 +1,30 @@
+name: Install mdlynx
+description: Install mdlynx from GitHub Releases and add it to PATH
+inputs:
+  version:
+    description: mdlynx version (without the leading 'v')
+    required: false
+    default: '0.1.0'
+runs:
+  using: composite
+  steps:
+    - name: Download and install mdlynx
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+      run: | # zizmor: ignore[github-env]
+        set -euo pipefail
+        install_dir="${HOME}/.local/bin"
+        mkdir -p "${install_dir}"
+        echo "${install_dir}" >> "${GITHUB_PATH}"
+        url="https://github.com/langston-barrett/mdlynx/releases/download/v${VERSION}/mdlynx"
+        curl \
+          --fail \
+          --location \
+          --proto '=https' \
+          --show-error \
+          --silent \
+          --tlsv1.2 \
+          --output "${install_dir}/mdlynx" \
+          ${url}
+        chmod +x "${install_dir}"/*
