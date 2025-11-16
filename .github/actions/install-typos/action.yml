@@ -1,0 +1,38 @@
+name: Install typos
+description: Install typos from GitHub Releases and add it to PATH
+inputs:
+  version:
+    description: version (without the leading 'v')
+    required: false
+    default: '1.39.2'
+  target:
+    description: Archive target triple
+    required: false
+    default: 'x86_64-unknown-linux-musl'
+runs:
+  using: composite
+  steps:
+    - name: Download and install typos
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+        TARGET: ${{ inputs.target }}
+      run: | # zizmor: ignore[github-env]
+        set -euo pipefail
+        install_dir="${HOME}/.local/bin"
+        mkdir -p "${install_dir}"
+        echo "${install_dir}" >> "${GITHUB_PATH}"
+        repo="crate-ci/typos"
+        archive="typos-v${VERSION}-${TARGET}.tar.gz"
+        url="https://github.com/${repo}/releases/download/v${VERSION}/${archive}"
+        curl \
+          --fail \
+          --location \
+          --proto '=https' \
+          --show-error \
+          --silent \
+          --tlsv1.2 \
+          ${url} | \
+          tar xzf - ./typos
+        mv typos "${install_dir}"
+        chmod +x "${install_dir}"/*
