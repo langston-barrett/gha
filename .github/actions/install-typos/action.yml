@@ -6,7 +6,7 @@ inputs:
     required: false
     default: '1.39.2'
   target:
-    description: Archive target triple
+    description: Target triple
     required: false
     default: 'x86_64-unknown-linux-musl'
 runs:
@@ -14,6 +14,7 @@ runs:
   steps:
     - name: Download and install typos
       shell: bash
+      # For why `env`, see https://docs.zizmor.sh/audits/#template-injection
       env:
         VERSION: ${{ inputs.version }}
         TARGET: ${{ inputs.target }}
