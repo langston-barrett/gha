@@ -1,0 +1,15 @@
+name: Install linters
+description: >
+  Install linters for GHA, Python, and Markdown.
+  Only works on x86_64 Linux.
+runs:
+  using: composite
+  steps:
+  - run: pip install mypy==v1.18.2
+    shell: bash
+  - uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1 # v2.1.4
+    with:
+      args: "--version"
+  - uses: langston-barrett/gha/.github/actions/install-mdlynx@9ec1e7e3d68302443e81a4bfc7940758f0bb01e9
+  - uses: langston-barrett/gha/.github/actions/install-typos@9ec1e7e3d68302443e81a4bfc7940758f0bb01e9
+  - uses: langston-barrett/gha/.github/actions/install-zizmor@9ec1e7e3d68302443e81a4bfc7940758f0bb01e9
