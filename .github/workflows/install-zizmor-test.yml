@@ -16,9 +16,8 @@ jobs:
   zizmor:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v5  # zizmor: ignore[unpinned-uses] TODO
       with:
         persist-credentials: false
     - uses: ./.github/actions/install-zizmor
-    # TODO: lint other actions+workflows
-    - run: zizmor .github/dependabot.yml
+    - run: zizmor .github
