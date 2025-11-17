@@ -22,6 +22,9 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    # Default is 360 (i.e., 6 hours), which can be wasteful. See:
+    # https://github.com/Cambridge-ICCS/green-ci/blob/b9e942d81e4d6536d69f3cfbffe28fa14b8ae381/README.md#time-limits
+    timeout-minutes: 15
     steps:
     - uses: actions/checkout@v5
     - uses: peaceiris/actions-mdbook@v2

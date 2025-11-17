@@ -29,6 +29,9 @@ jobs:
     if: github.event.pull_request.user.login == 'dependabot[bot]' &&
         github.event.pull_request.head.repo.fork == false &&
         github.repository_owner == 'langston-barrett'
+    # Default is 360 (i.e., 6 hours), which can be wasteful. See:
+    # https://github.com/Cambridge-ICCS/green-ci/blob/b9e942d81e4d6536d69f3cfbffe28fa14b8ae381/README.md#time-limits
+    timeout-minutes: 15
     steps:
       - name: Dependabot metadata
         id: metadata

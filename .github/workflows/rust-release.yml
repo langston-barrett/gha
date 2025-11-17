@@ -29,6 +29,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    # Default is 360 (i.e., 6 hours), which can be wasteful. See:
+    # https://github.com/Cambridge-ICCS/green-ci/blob/b9e942d81e4d6536d69f3cfbffe28fa14b8ae381/README.md#time-limits
+    timeout-minutes: 120
     steps:
     - uses: actions/checkout@v5
 
@@ -61,6 +64,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     permissions:
       contents: write
+    # Default is 360 (i.e., 6 hours), which can be wasteful. See:
+    # https://github.com/Cambridge-ICCS/green-ci/blob/b9e942d81e4d6536d69f3cfbffe28fa14b8ae381/README.md#time-limits
+    timeout-minutes: 120
     strategy:
       matrix:
         include:
