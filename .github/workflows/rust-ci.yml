@@ -95,6 +95,8 @@ jobs:
   ci:
     runs-on: ${{ inputs.os }}
     env:
+      CARGO_FLAGS: ${{ inputs.cargo-flags }}
+      CARGO_TEST_FLAGS: ${{ inputs.cargo-test-flags }}
       # Optimization, see: https://matklad.github.io/2021/09/04/fast-rust-builds.html#CI-Workflow
       CARGO_INCREMENTAL: 0
       RUSTFLAGS: --deny warnings
@@ -103,7 +105,7 @@ jobs:
     # https://github.com/Cambridge-ICCS/green-ci/blob/b9e942d81e4d6536d69f3cfbffe28fa14b8ae381/README.md#time-limits
     timeout-minutes: 120
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v5  # zizmor: ignore[unpinned-uses] TODO
       with:
         fetch-depth: ${{ inputs.fetch-depth }}
         # https://github.com/actions/checkout/issues/485
@@ -111,24 +113,30 @@ jobs:
         submodules: ${{ inputs.submodules }}
     - name: Run pre-hook
       if: inputs.pre-hook != ''
-      run: ${{ inputs.pre-hook }}
-    - run: rustup update ${{ inputs.rust }} && rustup default ${{ inputs.rust }}
+      run: | # zizmor: ignore[template-injection] This is the whole point of the step
+        ${{ inputs.pre-hook }}
+    - run: rustup update ${RUST} && rustup default ${RUST}
       if: inputs.rust != ''
+      env:
+        RUST: ${{ inputs.rust }}
     - run: cargo fmt --all -- --check
-    - run: cargo fetch ${{ inputs.cargo-flags }}
+    - run: cargo fetch ${CARGO_FLAGS}
     - run: rustup component add clippy
-    - uses: Swatinem/rust-cache@v2
+    - uses: Swatinem/rust-cache@v2  # zizmor: ignore[unpinned-uses] TODO
       with:
         prefix-key: ${{ inputs.cache-key-prefix }}
-    - run: cargo clippy --all-targets --frozen ${{ inputs.cargo-flags }} -- --deny warnings
-    - run: cargo build --all-targets --frozen ${{ inputs.cargo-flags }}
+    - run: cargo clippy --all-targets --frozen ${CARGO_FLAGS} -- --deny warnings
+    - run: cargo build --all-targets --frozen ${CARGO_FLAGS}
     - name: Run pre-test-hook
       if: inputs.pre-test-hook != ''
-      run: ${{ inputs.pre-test-hook }}
-    - run: cargo test --frozen ${{ inputs.cargo-flags }} -- ${{ inputs.cargo-test-flags }}
-    - run: cargo doc --examples --frozen --no-deps ${{ inputs.cargo-flags }}
-    - run: cargo bench --frozen ${{ inputs.cargo-flags }}
+      run: | # zizmor: ignore[template-injection] This is the whole point of the step
+        ${{ inputs.pre-test-hook }}
+    - run: cargo test --frozen ${CARGO_FLAGS} -- ${CARGO_TEST_FLAGS}
+    - run: cargo doc --examples --frozen --no-deps ${CARGO_FLAGS}
+    - run: cargo bench --frozen ${CARGO_FLAGS}
       if: inputs.bench
-    - name: Run post-hook
+    -
+      name: Run post-hook
       if: inputs.post-hook != ''
-      run: ${{ inputs.post-hook }}
+      run: | # zizmor: ignore[template-injection] This is the whole point of the step
+        ${{ inputs.post-hook }}

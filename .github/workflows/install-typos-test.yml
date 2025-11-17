@@ -16,7 +16,7 @@ jobs:
   typos:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v5  # zizmor: ignore[unpinned-uses] TODO
       with:
         persist-credentials: false
     - uses: ./.github/actions/install-typos
