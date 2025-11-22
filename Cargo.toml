@@ -10,7 +10,6 @@ homepage = "https://github.com/langston-barrett/gha"
 license = "MIT"
 # readme = "README.md"
 
-# My preferred lint configuration
 [workspace.lints.clippy]
 dbg_macro = "warn"
 explicit_iter_loop = "warn"
@@ -26,6 +25,7 @@ too_many_lines = "allow"
 unimplemented = "warn"
 uninlined_format_args = "warn"
 use_debug = "warn"
+
 [workspace.lints.rust]
 absolute_paths_not_starting_with_crate = "warn"
 dead_code = "warn"
