@@ -28,6 +28,8 @@ runs:
           --fail \
           --location \
           --proto '=https' \
+          --retry 1 \
+          --retry-delay 3 \
           --show-error \
           --silent \
           --tlsv1.2 \
