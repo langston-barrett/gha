@@ -10,7 +10,7 @@ runs:
   - uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1 # v2.1.4
     with:
       args: "--version"
-  - uses: langston-barrett/gha/.github/actions/install-mdlynx@369bbb9714c5bd66bc39bba0b80d28e2f4dfb918
-  - uses: langston-barrett/gha/.github/actions/install-taplo@369bbb9714c5bd66bc39bba0b80d28e2f4dfb918
-  - uses: langston-barrett/gha/.github/actions/install-typos@369bbb9714c5bd66bc39bba0b80d28e2f4dfb918
-  - uses: langston-barrett/gha/.github/actions/install-zizmor@369bbb9714c5bd66bc39bba0b80d28e2f4dfb918
+  - uses: langston-barrett/gha/.github/actions/install-mdlynx@e5167342da258d64c2af53b3b8db716784575694
+  - uses: langston-barrett/gha/.github/actions/install-taplo@e5167342da258d64c2af53b3b8db716784575694
+  - uses: langston-barrett/gha/.github/actions/install-typos@e5167342da258d64c2af53b3b8db716784575694
+  - uses: langston-barrett/gha/.github/actions/install-zizmor@e5167342da258d64c2af53b3b8db716784575694
