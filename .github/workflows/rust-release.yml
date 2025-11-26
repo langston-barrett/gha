@@ -7,19 +7,16 @@ defaults:
 on:
   workflow_call:
     inputs:
-      bin:
-        description: Name of binary
-        type: string
-        required: true
-      package:
-        description: Name of package to publish to crates.io
-        type: string
-        required: true
       publish:
         description: Publish to crates.io
         type: boolean
         required: false
         default: true
+      publish-flags:
+        description: Flags to `cargo publish`
+        type: string
+        required: false
+        default: --workspace
     secrets:
       crates-io-token:
         required: true
@@ -49,14 +46,13 @@ jobs:
     - name: Publish to crates.io
       env:
         CRATES_IO_TOKEN: ${{ secrets.crates-io-token }}
-        # Only push on actual release tags
-        PKG: ${{ inputs.package }}
+        FLAGS: ${{ inputs.publish-flags }}
         PUSH: ${{ startsWith(github.ref, 'refs/tags/v') && inputs.publish }}
       run: | # zizmor: ignore[use-trusted-publishing] TODO
         if [[ "${PUSH}" == true ]]; then
-          cargo publish --package="${PKG}" --token="${CRATES_IO_TOKEN}"
+          cargo publish "${FLAGS}" --token="${CRATES_IO_TOKEN}"
         else
-          cargo publish --dry-run --package="${PKG}" --token="${CRATES_IO_TOKEN}"
+          cargo publish --dry-run "${FLAGS}" --token="${CRATES_IO_TOKEN}"
         fi
 
   # Inspired by rustfmt:
@@ -74,31 +70,35 @@ jobs:
         include:
           - build: linux-x86_64-gnu
             os: ubuntu-latest
-            rust: stable
             target: x86_64-unknown-linux-gnu
           - build: linux-x86_64-musl
             os: ubuntu-latest
-            rust: stable
             target: x86_64-unknown-linux-musl
           - build: macos-x86_64
             os: macos-latest
-            rust: stable
             target: x86_64-apple-darwin
     steps:
-    - uses: actions/checkout@v6  # zizmor: ignore[unpinned-uses] TODO
+    - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
       with:
         persist-credentials: false
     - run: rustup target add ${{ matrix.target }}
     - run: sudo apt-get install -y musl-tools
       if: matrix.target == 'x86_64-unknown-linux-musl'
     - run: cargo fetch
-    - run: cargo build --bin="${BIN}" --frozen --release --target="${TARGET}"
+    - run: cargo build --bins --frozen --release --target="${TARGET}"
       env:
-        BIN: ${{ inputs.bin }}
         TARGET: ${{ matrix.target }}
-    - run: mv "target/${TARGET}/release/${BIN}" "${BIN}-${TARGET}"
+    - name: Collect binaries
+      run: |
+        mkdir -p bins/
+        for f in target/${TARGET}/release/*; do
+          if [[ -f "${f}" ]] && [[ -x "${f}" ]]; then
+            bin=bins/"$(basename "${f}")-${TARGET}"
+            cp "${f}" "${bin}"
+            gzip --best "${bin}"
+          fi
+        done
       env:
-        BIN: ${{ inputs.bin }}
         TARGET: ${{ matrix.target }}
     - name: Upload binaries
       uses: ncipollo/release-action@v1  # zizmor: ignore[unpinned-uses] TODO
@@ -107,7 +107,7 @@ jobs:
         allowUpdates: true
         artifactErrorsFailBuild: true
         replacesArtifacts: false
-        artifacts: ${{ inputs.bin }}-${{ matrix.target }}
+        artifacts: bins/*
         body: "See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md)."
         draft: true
         token: ${{ secrets.GITHUB_TOKEN }}
