@@ -1,6 +1,5 @@
 [book]
 authors = ["Langston Barrett"]
 language = "en"
-multilingual = false
 src = "."
 title = "Test"
