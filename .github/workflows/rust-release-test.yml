@@ -1,11 +1,12 @@
 name: Test release action
-
 on:
   push:
     branches:
     - release*
     tags:
     - v*
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   release:
@@ -15,6 +16,4 @@ jobs:
     secrets:
       crates-io-token: ${{ secrets.CRATES_IO_TOKEN }}
     with:
-      bin: test
-      package: test
       publish: false
