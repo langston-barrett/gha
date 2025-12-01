@@ -11,9 +11,14 @@ on:
         type: boolean
         required: false
         default: true
+    inputs:
+      path:
+        type: string
+        required: false
+        default: doc
 
 jobs:
-  Doc:
+  doc:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -31,14 +36,14 @@ jobs:
         persist-credentials: false
     - uses: peaceiris/actions-mdbook@v2  # zizmor: ignore[unpinned-uses] TODO
     - run: mdbook build
-      working-directory: doc
+      working-directory: ${{ inputs.path }}
     - name: Upload docs artifact to GitHub Pages
       uses: actions/upload-pages-artifact@v4  # zizmor: ignore[unpinned-uses] TODO
       if: github.ref == 'refs/heads/main' &&
           github.event.pull_request.head.repo.fork == false &&
           github.repository_owner == 'langston-barrett'
       with:
-        path: doc/book/
+        path: ${{ inputs.path }}/book/
     - name: Deploy docs to GitHub Pages
       uses: actions/deploy-pages@v4  # zizmor: ignore[unpinned-uses] TODO
       if: inputs.deploy &&
