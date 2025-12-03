@@ -96,6 +96,7 @@ jobs:
     runs-on: ${{ inputs.os }}
     env:
       CARGO_FLAGS: ${{ inputs.cargo-flags }}
+      CARGO_TERM_COLOR: always
       CARGO_TEST_FLAGS: ${{ inputs.cargo-test-flags }}
       # Optimization, see: https://matklad.github.io/2021/09/04/fast-rust-builds.html#CI-Workflow
       CARGO_INCREMENTAL: 0
