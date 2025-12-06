@@ -6,6 +6,9 @@ on:
     tags:
     - v*
   pull_request:
+    paths:
+    - ".github/workflows/rust-release.yml"
+    - ".github/workflows/rust-release-test.yml"
   workflow_dispatch:
 
 jobs:
