@@ -14,4 +14,5 @@ runs:
   - uses: langston-barrett/gha/.github/actions/install-typos@e5167342da258d64c2af53b3b8db716784575694
   - uses: langston-barrett/gha/.github/actions/install-zizmor@e5167342da258d64c2af53b3b8db716784575694
   - uses: langston-barrett/mdlynx/.github/actions/mdlynx@fdfb8470763ec1b514a73d864f502e0fbdebedcd
-  - uses: langston-barrett/ttlint/.github/actions/ttlint@320bea9d6690e93ce72e9389ab47f1f32a3c9140
+  - uses: langston-barrett/ttlint/.github/actions/ttlint@6af604ff5df174c47208a91cdbb3da47455ca36c
+
