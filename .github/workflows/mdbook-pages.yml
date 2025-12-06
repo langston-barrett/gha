@@ -30,7 +30,7 @@ jobs:
     # https://github.com/Cambridge-ICCS/green-ci/blob/b9e942d81e4d6536d69f3cfbffe28fa14b8ae381/README.md#time-limits
     timeout-minutes: 15
     steps:
-    - uses: actions/checkout@v6  # zizmor: ignore[unpinned-uses] TODO
+    - uses: actions/checkout@v6.0.1  # zizmor: ignore[unpinned-uses] TODO
       with:
         persist-credentials: false
     - uses: peaceiris/actions-mdbook@v2  # zizmor: ignore[unpinned-uses] TODO
