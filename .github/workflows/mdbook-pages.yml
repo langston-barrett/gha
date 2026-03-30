@@ -44,7 +44,7 @@ jobs:
       with:
         path: ${{ inputs.path }}/book/
     - name: Deploy docs to GitHub Pages
-      uses: actions/deploy-pages@v4  # zizmor: ignore[unpinned-uses] TODO
+      uses: actions/deploy-pages@v5  # zizmor: ignore[unpinned-uses] TODO
       if: inputs.deploy &&
           github.ref == 'refs/heads/main' &&
           github.event.pull_request.head.repo.fork == false &&
